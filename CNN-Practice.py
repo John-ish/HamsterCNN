@@ -13,10 +13,10 @@ from sklearn.utils.class_weight import compute_class_weight
 
 # --- 1. CONFIGURATION AND DATA PATHS ---
 
-TRAIN_FILE_PATH = 'C:/Users/kevbo/OneDrive/Desktop/Programming/Hamster-CNN/archive/train' 
-TEST_FILE_PATH = 'C:/Users/kevbo/OneDrive/Desktop/Programming/Hamster-CNN/archive/test' 
-WEIGHTS_FILE = 'C:/Users/kevbo/OneDrive/Desktop/Programming/Hamster-CNN/emotion_model.weights.h5' 
-JSON_FILE = 'C:/Users/kevbo/OneDrive/Desktop/Programming/Hamster-CNN/emotion_model.json'
+TRAIN_FILE_PATH = 'archive/train' #Path to training data
+TEST_FILE_PATH = 'archive/test' #Path to testing data
+WEIGHTS_FILE = 'emotion_model.weights.h5' #Path to model weights
+JSON_FILE = 'emotion_model.json' #Path to the emotion model .json file
 
 IMG_SIZE = (48, 48)
 BATCH_SIZE = 64
@@ -24,15 +24,15 @@ SEED = 123
 EPOCHS = 30 
 
 # ⚠️ NEW: DEFINE IMAGE PATHS ⚠️
-# UPDATE THESE PATHS TO YOUR LOCAL IMAGE FILES
+# Update these paths to your local images to display 
 IMAGE_MAP = {
-    0: "C:/Users/kevbo/OneDrive/Desktop/Programming/Hamster-CNN/Angry_Hamster.jpg",      
-    1: "C:/path/to/my/images/Disgust.png",    
-    2: "C:/Users/kevbo/OneDrive/Desktop/Programming/Hamster-CNN/Fearful_Hamster.jpg",    
-    3: "C:/Users/kevbo/OneDrive/Desktop/Programming/Hamster-CNN/Happy_Hamster.webp",      
-    4: "C:/Users/kevbo/OneDrive/Desktop/Programming/Hamster-CNN/sad-hamster.gif",        
-    5: "C:/path/to/my/images/Surprised.png",  
-    6: "C:/path/to/my/images/Neutral.png"     
+    0: "[Path/to/angry/image]",   
+    1: "[Path/to/disgust/image",    
+    2: "[Path/to/fearful/image]",    
+    3: "[Path/to/happy/image]",      
+    4: "[Path/to/sad/image]",        
+    5: "[Path/to/surprised/image]",  
+    6: "[Path/to/neutral/image]"     
 }
 
 # --- 2. MODEL DEFINITION AND TRAINING SETUP (Same as before) ---
@@ -133,4 +133,5 @@ while True:
         break
 
 cap.release()
+
 cv2.destroyAllWindows()
