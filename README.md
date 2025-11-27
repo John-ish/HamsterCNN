@@ -11,7 +11,7 @@ Ensure to update the placeholders in the file path variables before running the 
 
 The script loads in the CNN model from a json file using the model_from_json library from keras. 
 The model from the json file is the one I've trained. 
-To train your own model refer to the TrainModel.py file which creates a json file of the model and a file with the weights.
+To train your own model refer to the TrainModel.py file which creates a json file of the model and a file with the weights. (Ensure to name the weights file ending with "weights.h5"
 Simply update the file paths in the CNN-Practice.py file to use the model you've created.
 
 I've used this approach as you can train multiple models and have different weights files and .json files of these models to reuse on the CNN-practice.py file. (Yes, I am aware this is probably not very efficient.) 
