@@ -13,10 +13,10 @@ from sklearn.utils.class_weight import compute_class_weight
 
 # --- 1. CONFIGURATION AND DATA PATHS ---
 
-TRAIN_FILE_PATH = 'archive/train' 
-TEST_FILE_PATH = 'archive/test' 
-WEIGHTS_FILE = 'emotion_model.weights1.h5' 
-JSON_FILE = 'emotion_model1.json'
+TRAIN_FILE_PATH = 'archive/train' #path to the train dataset
+TEST_FILE_PATH = 'archive/test' #path to the test dataset
+WEIGHTS_FILE = 'emotion_model1.weights.h5' #path to the file where you want to save your model weights. (Ensure it ends with weights.h5)
+JSON_FILE = 'emotion_model1.json' #path to the model .json file
 
 IMG_SIZE = (48, 48)
 BATCH_SIZE = 64
