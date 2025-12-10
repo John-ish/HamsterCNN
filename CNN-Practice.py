@@ -14,7 +14,7 @@ from sklearn.utils.class_weight import compute_class_weight
 
 TRAIN_FILE_PATH = 'archive/train' #Path to the train set
 TEST_FILE_PATH = 'archive/test' #Path to the test set
-WEIGHTS_FILE = 'emotion_model.weights.h5' #Path to the weights of the CNN
+WEIGHTS_FILE = 'emotion_model.weights.h5' #path to the file where you want to save your model weights. (Ensure it ends with weights.h5)
 JSON_FILE = 'emotion_model.json' #Path to the model of the CNN.
 
 IMG_SIZE = (48, 48)
@@ -108,3 +108,4 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
