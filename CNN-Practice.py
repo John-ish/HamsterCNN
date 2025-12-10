@@ -11,8 +11,6 @@ import cv2
 import os
 from sklearn.utils.class_weight import compute_class_weight
 
-# --- 1. CONFIGURATION AND DATA PATHS ---
-
 TRAIN_FILE_PATH = 'archive/train' #Path to training data
 TEST_FILE_PATH = 'archive/test' #Path to testing data
 WEIGHTS_FILE = 'emotion_model.weights.h5' #Path to model weights
@@ -23,8 +21,6 @@ BATCH_SIZE = 64
 SEED = 123 
 EPOCHS = 30 
 
-# ⚠️ NEW: DEFINE IMAGE PATHS ⚠️
-# Update these paths to your local images to display 
 IMAGE_MAP = {
     0: "[Path/to/angry/image]",   
     1: "[Path/to/disgust/image",    
@@ -34,25 +30,11 @@ IMAGE_MAP = {
     5: "[Path/to/surprised/image]",  
     6: "[Path/to/neutral/image]"     
 }
-
-# --- 2. MODEL DEFINITION AND TRAINING SETUP (Same as before) ---
-# ... (Sections 2, 3, and 4 for data loading, model definition, and training)
-# ... (These sections are unchanged from the previous response for brevity)
-
+
 if not os.path.exists(TRAIN_FILE_PATH) or not os.path.exists(TEST_FILE_PATH):
     print(f"ERROR: Dataset directory not found. Please verify paths: {TRAIN_FILE_PATH} and {TEST_FILE_PATH}")
     exit()
-
-# --- Section 2 and 3 (Data Loading, Preprocessing, Model Definition) ---
-# (Omitted for brevity, assume they are included here from the previous response)
-
-# --- Section 4 (Compilation and Conditional Training) ---
-# (Omitted for brevity, assume it is included here from the previous response)
-
-
-# --- 5. REAL-TIME EMOTION DETECTION (Image Display Added) ---
-
-# Ensure model is ready for inference
+
 try:
     with open(JSON_FILE, 'r') as json_file:
         loaded_model_json = json_file.read()
@@ -102,13 +84,12 @@ while True:
         emotion_prediction = emotion_model.predict(processed_img, verbose=0)
         maxindex = int(np.argmax(emotion_prediction))
         
-        # Display the predicted emotion text
+        
         cv2.putText(frame, emotion_dict[maxindex], (x+5, y-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
         cv2.rectangle(frame, (x, y-50), (x+w, y+h+10), (0, 255, 0), 2)
         
         
-        # 🚀 ADDED: IMAGE DISPLAY LOGIC 🚀
-        try:
+        
             image_path = IMAGE_MAP[maxindex]
             emotion_img = cv2.imread(image_path)
             
@@ -116,15 +97,14 @@ while True:
                 # Resize the image to a fixed size (400x400) for a clean display
                 display_img = cv2.resize(emotion_img, (400, 400), interpolation=cv2.INTER_AREA)
 
-                # Display the image in a window titled 'Predicted Emotion Image'
+               
                 cv2.imshow('Predicted Emotion Image', display_img)
             else:
                 print(f"Warning: Image file not found at {image_path}")
 
         except KeyError:
-            # Should not happen if IMAGE_MAP is correct
             print(f"Error: Missing image path for index {maxindex}. Check IMAGE_MAP.")
-        # 🚀 END IMAGE DISPLAY LOGIC 🚀
+        
 
 
     cv2.imshow('Emotion Detection (Webcam)', frame)
