@@ -11,7 +11,6 @@ import cv2
 import os
 from sklearn.utils.class_weight import compute_class_weight
 
-# --- 1. CONFIGURATION AND DATA PATHS ---
 
 TRAIN_FILE_PATH = 'archive/train' #path to the train dataset
 TEST_FILE_PATH = 'archive/test' #path to the test dataset
@@ -54,7 +53,6 @@ validation_ds = keras.utils.image_dataset_from_directory(
 num_classes = len(train_ds.class_names) 
 INPUT_SHAPE = IMG_SIZE + (1,) 
 
-# --- 2.2 Preprocessing and Performance ---
 rescale_layer = layers.Rescaling(1./255)
 train_ds = train_ds.map(lambda x, y: (rescale_layer(x), y))
 validation_ds = validation_ds.map(lambda x, y: (rescale_layer(x), y))
@@ -63,7 +61,6 @@ AUTOTUNE = tf.data.AUTOTUNE
 train_ds = train_ds.cache().prefetch(buffer_size=AUTOTUNE)
 validation_ds = validation_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
-# --- 2.3 CLASS WEIGHTING (To fix Sad/Angry bias) ---
 print("\n--- 2.3 Calculating Class Weights for Imbalance ---")
 
 y_train_ints = np.concatenate([np.argmax(y, axis=-1) for x, y in train_ds])
@@ -77,7 +74,6 @@ class_weights_array = compute_class_weight(
 class_weights_dict = dict(enumerate(class_weights_array))
 print("Class Weights (index: weight) - Higher weights help with Sad/Angry/Disgust:", class_weights_dict)
 
-# --- 3. CNN MODEL DEFINITION (Increased Capacity) ---
 print("\n--- 3.1 Defining Increased-Capacity CNN Architecture ---")
 
 
@@ -102,8 +98,6 @@ emotion_model.add(Dense(1024, activation='relu'))
 emotion_model.add(Dropout(0.5))
 emotion_model.add(Dense(num_classes, activation='softmax')) 
 
-# --- 4. COMPILATION AND CONDITIONAL TRAINING (Reusability Fix) ---
-
 initial_learning_rate = 0.0001
 lr_schedule = ExponentialDecay(initial_learning_rate, decay_steps=100000, decay_rate=0.96)
 optimizer = Adam(learning_rate=lr_schedule)
@@ -115,11 +109,8 @@ SHOULD_TRAIN = False # Default: skip training if weights exist
 if os.path.exists(WEIGHTS_FILE):
     print(f"\n--- 4.1 Weights Found! Attempting to load existing model state from {WEIGHTS_FILE} ---")
     try:
-        # 🔑 CRUCIAL STEP: Load weights before compiling/training
         emotion_model.load_weights(WEIGHTS_FILE) 
         print("Weights loaded successfully.")
-        
-        # ⚠️ OPTION TO RESUME TRAINING ⚠️
         # Change this line to True if you want to train for more epochs,
         # otherwise, leave as False to skip training and go straight to webcam.
         SHOULD_TRAIN = False 
@@ -141,34 +132,25 @@ if SHOULD_TRAIN:
         train_ds,
         epochs=EPOCHS,
         validation_data=validation_ds,
-        class_weight=class_weights_dict # Applying the calculated weights
+        class_weight=class_weights_dict 
     )
     print("Training finished. Saving model files.")
-
-    # Save the architecture (if not already saved)
     if not os.path.exists(JSON_FILE):
         model_json = emotion_model.to_json()
         with open(JSON_FILE, "w") as json_file:
             json_file.write(model_json)
         print("Model architecture saved to emotion_model.json.")
         
-    # Save the NEW, learned weights
+    
     emotion_model.save_weights(WEIGHTS_FILE)
     
-    # Plotting code... (omitted for brevity, but you can put it here if needed)
 else:
     print("\n--- 4.2 Skipping Training. Proceeding to Inference. ---")
-
-
-# --- 5. REAL-TIME EMOTION DETECTION (Using Trained Model) ---
-
-# We only need to load the model architecture (JSON) once
 try:
     with open(JSON_FILE, 'r') as json_file:
         loaded_model_json = json_file.read()
     emotion_model = model_from_json(loaded_model_json)
     
-    # Reload the final weights again, just in case (e.g., if training was skipped)
     emotion_model.load_weights(WEIGHTS_FILE) 
 except Exception as e:
     print(f"\nERROR: Could not load trained model for inference. Check if '{JSON_FILE}' and '{WEIGHTS_FILE}' exist.")
@@ -223,7 +205,5 @@ while True:
     
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
-# Cleanup
 cap.release()
 cv2.destroyAllWindows()
